@@ -1,0 +1,182 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <meta charset="UTF-8">
+    <title>orbit-demo</title>
+    <script src='javascript/three.js'></script>
+    <script src='javascript/OrbitControls.js'></script>    
+    <script src='javascript/CSS3DObject.js'></script>        
+    <style>
+      canvas{
+        border: solid;
+        cursor: pointer;
+        width: 100%;
+        height: 600px;
+     }
+      div#three-div{
+      background: #BADA55;
+      color: #E50000;
+      font-family: Arial, Helvetica, Sans-serif;
+      font-size: 2em;
+      padding: 2em;
+      }
+
+      button{
+        width: 30%;
+        height: 50px;
+        z-index: 5;
+      }
+      .transform{
+        transform-style: preserve-3d;
+        width: 890px;
+        height: 703px;
+        transform: translate3d(0px, 0px, 848.596px) 
+                   matrix3d(0.830122, -0.159382, -0.534317, 0, -0.397016, -0.841806, -0.365706, 0, 0.391505, -0.515713, 0.762079, 0, 459.058, 550.455, -2696.83, 1) 
+                   translate3d(445px, 351.5px, 0px);
+      }
+    </style>
+  </head>
+
+  <body>
+     <script>
+      var torus,torus1,torus2,light,renderer,scene2,renderer2, div;
+
+      init();
+      animate();
+      up();
+      down();
+      animationUp();
+      animationDown();
+      function init() {
+          //camera
+          camera = new THREE.PerspectiveCamera(45, window.innerWidth / window.innerHeight, 1, 10000);
+          camera.position.set(0, 0, -1000);
+          
+          //controls
+          controls = new THREE.OrbitControls(camera);
+          //controls.addEventListener( 'change', updateControls );
+          controls.rotateSpeed = 1.0;
+          controls.zoomSpeed = 1.2;
+          controls.panSpeed = 0.8;
+          
+          //Scene
+          scene = new THREE.Scene();
+          
+          //TorusGeometry
+          torus = new THREE.Mesh(new THREE.CubeGeometry(200,150,80),
+                                new THREE.MeshNormalMaterial());
+          torus1 = new THREE.Mesh(new THREE.CubeGeometry(80,150,200),
+                                new THREE.MeshNormalMaterial());
+          torus2 = new THREE.Mesh(new THREE.CubeGeometry(80,150,200),
+          new THREE.MeshNormalMaterial());
+          torus.rotation.x = 90 * Math.PI /180;
+          torus.rotation.y = 180 * Math.PI /180;
+          torus.rotation.z = 45 * Math.PI /180;
+          torus1.rotation.x = 90 * Math.PI /180;
+          torus1.rotation.y = 180 * Math.PI /180;
+          torus1.rotation.z = 45 * Math.PI /180;        
+          torus2.rotation.x = 90 * Math.PI /180;
+          torus2.rotation.y = 180 * Math.PI /180;
+          torus2.rotation.z = 45 * Math.PI /180;
+          torus.position.set(0, 0, 0);
+          torus1.position.set(-90,-60,90);
+          torus2.position.set(90,-60,-90);        
+          scene.add(torus,torus1,torus2);
+
+          //HemisphereLight
+          light = new THREE.HemisphereLight(0xffbf67, 0x15c6ff);
+          scene.add(light);
+          
+          //WebGL Renderer
+          renderer = new THREE.WebGLRenderer({ antialias: true });
+          renderer.setClearColor(0xffffff, 1)
+          renderer.setSize(window.innerWidth, window.innerHeight-200);
+          document.body.appendChild(renderer.domElement);
+                
+      }
+
+      function animate() {
+          requestAnimationFrame(animate);
+          //renderer2.render(scene2, camera);
+          renderer.render(scene, camera);
+          controls.update();
+      }
+
+      function animationUp( ){
+        if(torus.position.y != 80 && torus1.position.x != -1&&torus2.position.x !=1 ){
+          torus2.position.z = torus2.position.z - 5;     
+          torus2.position.x = torus2.position.x + 5;                  
+          torus1.position.x = torus1.position.x - 5;
+          torus1.position.z = torus1.position.z + 5;                      
+          torus.position.y = torus.position.y + 5;
+          renderer.render(scene, camera);
+          requestAnimationFrame(animationUp);
+        }
+      }
+
+      function animationDown(){
+        if(torus.position.y != 0 &&torus1.position.x != -90 &&torus2.position.x!=80){
+         torus2.position.z = torus2.position.z + 5;  
+          torus2.position.x = torus2.position.x - 5;                                 
+          torus1.position.x = torus1.position.x + 5;
+          torus1.position.z = torus1.position.z - 5;            
+          torus.position.y = torus.position.y - 5;
+          renderer.render(scene, camera);
+          requestAnimationFrame(animationDown);
+        }
+      }
+
+      function animationStep(){
+        //torus.position.y = torus.position.y - 5;  
+       // if(torus2.position.x != 95&&torus2.position.y!=0 ){
+        if(torus2.position.x !=200&& torus2.position.y!=20&& torus2.position.z!=-30 ){          
+          torus2.position.x = torus2.position.x - 5;  
+          torus2.position.y = torus2.position.y + 5;      
+          torus2.position.z = torus2.position.z + 5;      
+          renderer.render(scene, camera);
+          var t=setTimeout('stepbystep();',500)
+          requestAnimationFrame(animationStep);
+        }
+      }
+
+      function stepbystep(){
+        if(torus1.position.x !=-200&& torus1.position.y!=20&& torus1.position.z!=-30){
+          torus1.position.x = torus1.position.x + 5;     
+          torus1.position.y = torus1.position.y + 5;     
+          torus1.position.z = torus1.position.z - 5;                                   
+          renderer.render(scene, camera);   
+          var t=setTimeout('stepback();',500)
+          requestAnimationFrame(stepbystep);                   
+        }
+      }
+
+      function stepback(){
+        if(torus.position.y!=0&&torus1.position.y!=-60&&torus2.position.y!=-60){
+          torus.position.y = torus.position.y - 1;
+          torus1.position.y = torus1.position.y - 1;
+          torus2.position.y = torus2.position.y - 1;
+          renderer.render(scene, camera);   
+          requestAnimationFrame(stepback);      
+        }
+      }
+
+      function up(){
+        animationUp();
+      }
+
+      function down(){
+        animationDown();
+      }
+
+      function step(){
+        animationStep();       
+      }
+    </script>
+    <!--<div class='transform'>sdfasfsa</div>-->
+    <div>
+      <button id='up' onclick="up();">分开</button>
+      <button id='down' onclick="down()">还原</button> 
+      <button id='step' onclick="step()">分步还原</button>       
+    </div>
+  </body>
+</html>

@@ -1,0 +1,154 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <meta charset="UTF-8">
+    <title>让场景动起来</title>
+    <script src='javascript/three.js'></script>
+    <style type="text/css">
+    div#canvas-frame {
+      border: solid;
+      cursor: pointer;
+      width: 100%;
+      height: 600px;
+      background-color: #EEEEEE;
+    }
+    button#up{
+      width: 20%;
+      height: 50px;
+    }
+    button#down{
+      width: 20%;
+      height: 50px;
+    }
+     button#right{
+      width: 20%;
+      height: 50px;
+    }
+     button#left{
+      width: 20%;
+      height: 50px;
+    }
+    </style>
+    <script>
+      var renderer;
+      function initThree(){
+        width = document.getElementById('canvas-frame').clientWidth;
+        height = document.getElementById('canvas-frame').clientHeight;
+        renderer = new THREE.WebGLRenderer({
+          antialias : true
+        });
+        renderer.setSize(width, height);
+        document.getElementById('canvas-frame').appendChild(renderer.domElement);
+        renderer.setClearColor(0xFFFFFF,1.0);
+      }
+
+      var camera;
+      function initCamera(){
+        camera = new THREE.PerspectiveCamera(45,width/height,1,10000);
+        camera.position.x = 200;
+        camera.position.y = 0;
+        camera.position.z = 600;
+        camera.up.x = 0;
+        camera.up.y = 1;
+        camera.up.z = 0;
+        camera.lookAt({
+          x : 0,
+          y : -100,
+          z : 0
+        });
+      }
+
+      var scene;
+      function initScene(){
+        scene = new THREE.Scene();
+      }
+
+      var light;
+      function initLight(){
+        light = new THREE.DirectionalLight(0xFF0000,10);
+        // 位置不同，方向光作用于物体的面也不同，看到的物体各个面的颜色也不一样
+        light.position.set(1,0,1);
+        scene.add(light);
+      }
+
+     // var cube;
+        var mesh,mesh1,mesh2;
+      function initObject(){
+        //var geometry = new THREE.CylinderGeometry(100,150,400);
+        var geometry = new THREE.CubeGeometry(200,150,80); //长方体的长宽高
+        var geometry1 = new THREE.CubeGeometry(80,150,200); //长方体的长宽高
+        var geometry2 = new THREE.CubeGeometry(80,150,200); //长方体的长宽高
+        var material = new THREE.MeshLambertMaterial({ color:0xFFFFFF});
+        mesh = new THREE.Mesh(geometry,material);
+        mesh1 = new THREE.Mesh(geometry1,material);
+        mesh2 = new THREE.Mesh(geometry2,material);
+        mesh.position = new THREE.Vector3(0,0,0);
+        mesh.rotation.x = 90 * Math.PI /180;
+        mesh.rotation.y = 180 * Math.PI /180;
+        mesh.rotation.z = 45 * Math.PI /180;
+        mesh1.rotation.x = 90 * Math.PI /180;
+        mesh1.rotation.y = 180 * Math.PI /180;
+        mesh1.rotation.z = 45 * Math.PI /180;
+        mesh2.rotation.x = 90 * Math.PI /180;
+        mesh2.rotation.y = 180 * Math.PI /180;
+        mesh2.rotation.z = 45 * Math.PI /180;
+        mesh.position.set(0,0,0);
+        mesh1.position.set(-90,-60,90);        
+        mesh2.position.set(90,-60,-90);        
+        scene.add(mesh,mesh1,mesh2);
+      }
+
+      function threeStart(){
+        initThree();
+        initCamera();
+        initScene();
+        initLight();
+        initObject();
+        renderer.render(scene, camera);
+        //animationUp();
+      }
+
+      function animationUp( ){
+        if(mesh.position.y != 80 && mesh1.position.x != -1&&mesh2.position.x !=1 ){
+          mesh2.position.x = mesh2.position.x + 5;
+          mesh1.position.x = mesh1.position.x - 5;
+          mesh.position.y = mesh.position.y + 5;
+          renderer.render(scene, camera);
+          requestAnimationFrame(animationUp);
+        }
+      }
+
+      function animationDown(){
+        if(mesh.position.y != 0 &&mesh1.position.x != -90 &&mesh2.position.x!=80){
+          mesh2.position.x = mesh2.position.x - 5;
+          mesh1.position.x = mesh1.position.x + 5;
+          mesh.position.y = mesh.position.y - 5;
+          renderer.render(scene, camera);
+          requestAnimationFrame(animationDown);
+        }
+      }
+
+      function up(){
+        animationUp();
+      }
+
+      function down(){
+        animationDown();
+      }
+
+      function left(){
+        //animationDown();
+      }
+      function right(){
+        //animationDown();
+      }
+
+    </script>
+  </head>
+
+  <body onload="threeStart();">
+    <div id='canvas-frame'></div>
+    <button id='up' onclick="up();">分开</button>
+    <button id='down' onclick="down()">还原</button>
+  </body>
+</html>

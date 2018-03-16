@@ -1,0 +1,217 @@
+<!DOCTYPE html>
+<html lang="en">
+	<head>
+		<title>three.js webgl - materials - channels</title>
+		<meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <script src="javascript/three.js"></script>
+    <script src="javascript/Detector.js"></script>
+    <script src="javascript/OrbitControls.js"></script>
+    <script src="javascript/OBJLoader.js"></script>
+    <script src="javascript/MTLLoader.js"></script>
+		<style>
+			body {
+				background:#EEEEEE;
+				color:#fff;
+				padding:0;
+				margin:0;
+				font-weight: bold;
+				overflow:hidden;
+			}
+		</style>
+
+
+	</head>
+
+	<body>
+		<script>
+
+			if ( ! Detector.webgl ) Detector.addGetWebGLMessage();
+
+			// var stats;
+			// var camera, scene, renderer, controls;
+
+			// var params = {
+			// 	material: 'normal',
+			// 	camera: 'perspective',
+			// 	side: 'double'
+			// };
+      var container;
+      var camera, controls, scene, renderer;
+      var lighting, ambient, keyLight, fillLight, backLight;
+			var windowHalfX = window.innerWidth / 2;
+			var windowHalfY = window.innerHeight / 2;
+
+			init();
+			animate();
+
+			function init() {
+
+				var container = document.createElement( 'div' );
+				document.body.appendChild( container );
+
+				// camera
+				camera = new THREE.PerspectiveCamera(45, window.innerWidth / window.innerHeight, 1, 2500);
+        camera.position.z = 3;
+
+				//scene
+				scene = new THREE.Scene();
+				lighting = false;
+
+				ambient = new THREE.AmbientLight(0xffffff, 1.0);
+				scene.add(ambient);
+
+				keyLight = new THREE.DirectionalLight(new THREE.Color('hsl(30, 100%, 75%)'), 1.0);
+				keyLight.position.set(-100, 0, 100);
+
+				fillLight = new THREE.DirectionalLight(new THREE.Color('hsl(240, 100%, 75%)'), 0.75);
+				fillLight.position.set(100, 0, 100);
+
+				backLight = new THREE.DirectionalLight(0xffffff, 1.0);
+				backLight.position.set(100, 0, -100).normalize();
+
+				//model
+				var mtlLoader = new THREE.MTLLoader();
+        window.addEventListener( 'resize', onWindowResize, false );				
+					mtlLoader.setPath('images/benz/');
+					mtlLoader.load('sls_amg.mtl', function (materials) {
+						materials.preload();
+            materials.materials.engine.map.magFilter = THREE.NearestFilter;
+            materials.materials.engine.map.minFilter = THREE.LinearFilter;
+            materials.materials.carbonfiber.map.magFilter = THREE.NearestFilter;
+            materials.materials.carbonfiber.map.minFilter = THREE.LinearFilter;
+            materials.materials.carbonfiber0.map.magFilter = THREE.NearestFilter;
+            materials.materials.carbonfiber0.map.minFilter = THREE.LinearFilter;
+            materials.materials.carbonfiber1.map.magFilter = THREE.NearestFilter;
+            materials.materials.carbonfiber1.map.minFilter = THREE.LinearFilter;
+            materials.materials.disc.map.magFilter = THREE.NearestFilter;
+            materials.materials.disc.map.minFilter = THREE.LinearFilter;
+            materials.materials.disc0.map.magFilter = THREE.NearestFilter;
+            materials.materials.disc0.map.minFilter = THREE.LinearFilter;
+            materials.materials.disc1.map.magFilter = THREE.NearestFilter;
+            materials.materials.disc1.map.minFilter = THREE.LinearFilter;
+            materials.materials.disc2.map.magFilter = THREE.NearestFilter;
+            materials.materials.disc2.map.minFilter = THREE.LinearFilter;
+            materials.materials.disc3.map.magFilter = THREE.NearestFilter;
+            materials.materials.disc3.map.minFilter = THREE.LinearFilter;
+            materials.materials.disc4.map.magFilter = THREE.NearestFilter;
+            materials.materials.disc4.map.minFilter = THREE.LinearFilter;
+            materials.materials.disc5.map.magFilter = THREE.NearestFilter;
+            materials.materials.disc5.map.minFilter = THREE.LinearFilter;
+            materials.materials.disc6.map.magFilter = THREE.NearestFilter;
+            materials.materials.disc6.map.minFilter = THREE.LinearFilter;
+            materials.materials.disc7.map.magFilter = THREE.NearestFilter;
+            materials.materials.disc7.map.minFilter = THREE.LinearFilter;
+            materials.materials.disc8.map.magFilter = THREE.NearestFilter;
+            materials.materials.disc8.map.minFilter = THREE.LinearFilter;
+            materials.materials.disc9.map.magFilter = THREE.NearestFilter;
+            materials.materials.disc9.map.minFilter = THREE.LinearFilter;
+            materials.materials.disc10.map.magFilter = THREE.NearestFilter;
+            materials.materials.disc10.map.minFilter = THREE.LinearFilter;
+					  materials.materials.grille1.map.magFilter = THREE.NearestFilter;
+						materials.materials.grille1.map.minFilter = THREE.LinearFilter;
+            materials.materials.grille10.map.magFilter = THREE.NearestFilter;
+						materials.materials.grille10.map.minFilter = THREE.LinearFilter;
+            materials.materials.grille11.map.magFilter = THREE.NearestFilter;
+						materials.materials.grille11.map.minFilter = THREE.LinearFilter;
+            materials.materials.interior0.map.magFilter = THREE.NearestFilter;
+						materials.materials.interior0.map.minFilter = THREE.LinearFilter;
+            materials.materials.interior1.map.magFilter = THREE.NearestFilter;
+						materials.materials.interior1.map.minFilter = THREE.LinearFilter;
+            materials.materials.interior2.map.magFilter = THREE.NearestFilter;
+						materials.materials.interior2.map.minFilter = THREE.LinearFilter;
+            materials.materials.interior3.map.magFilter = THREE.NearestFilter;
+						materials.materials.interior3.map.minFilter = THREE.LinearFilter;
+            materials.materials.interior4.map.magFilter = THREE.NearestFilter;
+						materials.materials.interior4.map.minFilter = THREE.LinearFilter;
+            materials.materials.interior5.map.magFilter = THREE.NearestFilter;
+						materials.materials.interior5.map.minFilter = THREE.LinearFilter;
+            materials.materials.lights.map.magFilter = THREE.NearestFilter;
+						materials.materials.lights.map.minFilter = THREE.LinearFilter;
+            materials.materials.lights0.map.magFilter = THREE.NearestFilter;
+						materials.materials.lights0.map.minFilter = THREE.LinearFilter;
+            materials.materials.lights1.map.magFilter = THREE.NearestFilter;
+						materials.materials.lights1.map.minFilter = THREE.LinearFilter;
+            materials.materials.lights2.map.magFilter = THREE.NearestFilter;
+						materials.materials.lights2.map.minFilter = THREE.LinearFilter;
+            materials.materials.lights3.map.magFilter = THREE.NearestFilter;
+						materials.materials.lights3.map.minFilter = THREE.LinearFilter;
+            materials.materials.sls_interior.map.magFilter = THREE.NearestFilter;
+						materials.materials.sls_interior.map.minFilter = THREE.LinearFilter;
+            materials.materials.tire.map.magFilter = THREE.NearestFilter;
+						materials.materials.tire.map.minFilter = THREE.LinearFilter;
+            materials.materials.undercarriage.map.magFilter = THREE.NearestFilter;
+						materials.materials.undercarriage.map.minFilter = THREE.LinearFilter;
+            materials.materials.undercarriage0.map.magFilter = THREE.NearestFilter;
+						materials.materials.undercarriage0.map.minFilter = THREE.LinearFilter;
+            materials.materials.undercarriage1.map.magFilter = THREE.NearestFilter;
+						materials.materials.undercarriage1.map.minFilter = THREE.LinearFilter;
+						var objLoader = new THREE.OBJLoader();
+						objLoader.setMaterials(materials);
+						objLoader.setPath('images/benz/');
+						objLoader.load('sls_amg.obj', function (object) {
+							scene.add(object);
+						});
+				});
+
+				//renderer
+				renderer = new THREE.WebGLRenderer();
+				renderer.setPixelRatio(window.devicePixelRatio);
+				renderer.setSize(window.innerWidth, window.innerHeight);
+				renderer.setClearColor(new THREE.Color("hsl(0, 0%, 10%)"));
+
+				container.appendChild(renderer.domElement);
+
+				//controls
+				controls = new THREE.OrbitControls(camera, renderer.domElement);
+				controls.enableDamping = true;
+				controls.dampingFactor = 0.25;
+				controls.enableZoom = true;
+
+				//events
+				window.addEventListener('resize', onWindowResize, false);
+        window.addEventListener('keydown', onKeyboardEvent, false);
+
+			}
+
+			function onWindowResize() {
+				windowHalfX = window.innerWidth / 2;
+				windowHalfY = window.innerHeight / 2;
+				camera.aspect = window.innerWidth / window.innerHeight;
+				camera.updateProjectionMatrix();
+				renderer.setSize(window.innerWidth, window.innerHeight);
+			}
+
+			function onKeyboardEvent(e) {
+
+				if (e.code === 'KeyL') {
+					lighting = !lighting;
+					  if (lighting) {
+							ambient.intensity = 0.25;
+							scene.add(keyLight);
+							scene.add(fillLight);
+							scene.add(backLight);
+			  		} else {
+							ambient.intensity = 1.0;
+							scene.remove(keyLight);
+							scene.remove(fillLight);
+							scene.remove(backLight);
+					}
+				}
+    }
+			
+			function animate() {
+				requestAnimationFrame(animate);
+        controls.update();
+        render();
+			}
+
+			function render() {
+				renderer.render( scene, camera );
+			}
+
+		</script>
+
+	</body>
+
+</html>
